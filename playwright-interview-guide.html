@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Playwright Interview Preparation Guide for Automation/SDET Engineers: progressive questions, answers, explanations, and official sources." />
+  <title>Playwright Interview Preparation Guide for Automation/SDET Engineers</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="assets/course.css" />
+  <link rel="stylesheet" href="assets/interview.css" />
+</head>
+<body>
+<main class="page" id="top">
+  <p class="eyebrow">Playwright · Interview preparation · SDET</p>
+  <h1>Playwright Interview Preparation Guide for Automation/SDET Engineers</h1>
+  <p class="lede">Progressive interview preparation grounded in official documentation, from fundamentals to production-scale test engineering.</p>
+  <div class="guide-meta">
+    <span>55 questions</span>
+    <span>Easy → Intermediate → Advanced</span>
+    <span>Print-friendly</span>
+  </div>
+  <nav class="guide-nav" aria-label="Guide navigation">
+    <a href="#easy">Easy</a>
+    <a href="#intermediate">Intermediate</a>
+    <a href="#advanced">Advanced</a>
+    <a href="selenium-interview-guide.html">Selenium guide</a>
+    <a href="index.html">Course home</a>
+  </nav>
+<p>This guide progresses from foundational Playwright knowledge to architecture, scale, and reliability topics expected in Automation Engineer and SDET interviews. The examples and terminology use Playwright Test for Node.js/TypeScript unless stated otherwise.</p>
+<h2 id="how-to-use-this-guide">How to use this guide</h2>
+<ul>
+<li>Answer each question aloud before reading the answer.</li>
+<li>In an interview, start with the <strong>Direct answer</strong>, then add the <strong>Explanation</strong> when the interviewer asks for depth.</li>
+<li>Follow the official links when you need API details or runnable examples.</li>
+</ul>
+<hr />
+<h2 id="easy" class="level-heading">Easy</h2>
+<article class="qa" id="1-what-is-playwright-test-and-which-browsers-does-it-support">
+<h3>1. What is Playwright Test, and which browsers does it support?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Playwright Test is an end-to-end test framework that includes a test runner, assertions, isolation, parallel execution, and debugging tools. It supports Chromium, Firefox, and WebKit.</p>
+<p><strong class="answer-label">Explanation:</strong> It can run headless or headed on Windows, Linux, and macOS. Its browser engines provide coverage for Chrome/Edge-family behavior, Firefox, and Safari-family behavior, while device descriptors can emulate selected mobile browser characteristics.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/intro" target="_blank" rel="noopener">https://playwright.dev/docs/intro</a></li>
+<li><a href="https://playwright.dev/docs/browsers" target="_blank" rel="noopener">https://playwright.dev/docs/browsers</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="2-how-do-you-install-playwright-test-in-a-new-or-existing-node-js-project">
+<h3>2. How do you install Playwright Test in a new or existing Node.js project?</h3>
+<p><strong class="answer-label">Direct answer:</strong> For a guided setup, run <code>npm init playwright@latest</code>. In an existing project, install <code>@playwright/test</code> and then install the required browser binaries with <code>npx playwright install</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> The initializer can create a config, sample tests, and a CI workflow. On Linux CI, <code>npx playwright install --with-deps</code> installs browser binaries and required operating-system dependencies.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/intro" target="_blank" rel="noopener">https://playwright.dev/docs/intro</a></li>
+<li><a href="https://playwright.dev/docs/browsers" target="_blank" rel="noopener">https://playwright.dev/docs/browsers</a></li>
+<li><a href="https://playwright.dev/docs/ci" target="_blank" rel="noopener">https://playwright.dev/docs/ci</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="3-what-belongs-in-playwright-config-ts">
+<h3>3. What belongs in <code>playwright.config.ts</code>?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Put test-runner settings at the top level and browser/context behavior under <code>use</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> Top-level settings include <code>testDir</code>, <code>timeout</code>, <code>workers</code>, <code>retries</code>, <code>projects</code>, <code>reporter</code>, and <code>webServer</code>. Settings such as <code>baseURL</code>, <code>storageState</code>, <code>viewport</code>, <code>trace</code>, <code>video</code>, and <code>screenshot</code> belong under <code>use</code>. Configuration can be global, project-specific, or overridden for a test group with <code>test.use()</code>.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-configuration" target="_blank" rel="noopener">https://playwright.dev/docs/test-configuration</a></li>
+<li><a href="https://playwright.dev/docs/test-use-options" target="_blank" rel="noopener">https://playwright.dev/docs/test-use-options</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="4-what-is-the-basic-structure-of-a-playwright-test">
+<h3>4. What is the basic structure of a Playwright test?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Import <code>test</code> and <code>expect</code>, declare a named test, receive fixtures such as <code>page</code>, perform actions, and assert the result.</p>
+<p><strong class="answer-label">Explanation:</strong> <code>test()</code> registers a test with the runner. The runner supplies only the requested fixtures, and Playwright's async actions and web assertions should be awaited.</p>
+<pre><code class="language-ts">import { test, expect } from &#x27;@playwright/test&#x27;;
+
+test(&#x27;shows the dashboard&#x27;, async ({ page }) =&gt; {
+  await page.goto(&#x27;/dashboard&#x27;);
+  await expect(page.getByRole(&#x27;heading&#x27;, { name: &#x27;Dashboard&#x27; })).toBeVisible();
+});</code></pre>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/writing-tests" target="_blank" rel="noopener">https://playwright.dev/docs/writing-tests</a></li>
+<li><a href="https://playwright.dev/docs/test-fixtures" target="_blank" rel="noopener">https://playwright.dev/docs/test-fixtures</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="5-how-do-you-run-and-filter-tests-from-the-command-line">
+<h3>5. How do you run and filter tests from the command line?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Use <code>npx playwright test</code> for the suite, append a file or line for a subset, use <code>-g</code> for a title match, and use <code>--project</code> for one configured project.</p>
+<p><strong class="answer-label">Explanation:</strong> Common development flags include <code>--headed</code>, <code>--ui</code>, <code>--debug</code>, <code>--workers</code>, <code>--retries</code>, and <code>--trace</code>. The runner is headless and runs test files in parallel by default.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/running-tests" target="_blank" rel="noopener">https://playwright.dev/docs/running-tests</a></li>
+<li><a href="https://playwright.dev/docs/test-cli" target="_blank" rel="noopener">https://playwright.dev/docs/test-cli</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="6-what-is-a-locator">
+<h3>6. What is a locator?</h3>
+<p><strong class="answer-label">Direct answer:</strong> A locator is a reusable query that finds an element when an action or assertion is performed.</p>
+<p><strong class="answer-label">Explanation:</strong> Locators are central to Playwright's auto-waiting and retry behavior. They re-resolve the current DOM element before each action, so they remain useful when a framework re-renders the page.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/locators" target="_blank" rel="noopener">https://playwright.dev/docs/locators</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="7-which-locator-strategy-should-you-prefer">
+<h3>7. Which locator strategy should you prefer?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Prefer user-facing locators such as <code>getByRole()</code> with an accessible name, then other user-facing attributes or an explicit test-id contract.</p>
+<p><strong class="answer-label">Explanation:</strong> Role, label, placeholder, text, alt text, and title locators model how users perceive the page. Test IDs are stable explicit contracts when user-facing values are unsuitable. Long CSS/XPath chains couple tests to DOM implementation and are usually less resilient.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/locators" target="_blank" rel="noopener">https://playwright.dev/docs/locators</a></li>
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="8-what-does-locator-strictness-mean">
+<h3>8. What does locator strictness mean?</h3>
+<p><strong class="answer-label">Direct answer:</strong> An operation that requires one target fails if its locator matches multiple elements.</p>
+<p><strong class="answer-label">Explanation:</strong> Strictness catches ambiguous tests instead of choosing an arbitrary element. Refine the locator with role, accessible name, filtering, or composition. <code>first()</code>, <code>last()</code>, and <code>nth()</code> opt out but can silently select the wrong element after a UI change.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/locators#strictness" target="_blank" rel="noopener">https://playwright.dev/docs/locators#strictness</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="9-what-are-web-first-assertions">
+<h3>9. What are web-first assertions?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Web-first assertions are async Playwright matchers that repeatedly re-check page state until the expectation passes or its timeout expires.</p>
+<p><strong class="answer-label">Explanation:</strong> Examples include <code>toBeVisible()</code>, <code>toHaveText()</code>, <code>toHaveURL()</code>, and <code>toHaveCount()</code>. They are more reliable for asynchronous UIs than immediately reading a value and applying a non-retrying assertion. They must be awaited.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-assertions" target="_blank" rel="noopener">https://playwright.dev/docs/test-assertions</a></li>
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="10-what-is-auto-waiting">
+<h3>10. What is auto-waiting?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Before an action, Playwright waits for the target to satisfy the action's required actionability checks.</p>
+<p><strong class="answer-label">Explanation:</strong> For a click, Playwright verifies that the locator resolves to one element and that it is visible, stable, receives events, and is enabled. If the checks do not pass within the timeout, the action fails. This is not the same as waiting for every possible application condition; assertions should still verify expected outcomes.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/actionability" target="_blank" rel="noopener">https://playwright.dev/docs/actionability</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="11-why-should-tests-avoid-fixed-sleeps">
+<h3>11. Why should tests avoid fixed sleeps?</h3>
+<p><strong class="answer-label">Direct answer:</strong> A fixed sleep waits for elapsed time rather than the state the test needs, making tests either slow or flaky.</p>
+<p><strong class="answer-label">Explanation:</strong> Prefer locator actions, web-first assertions, or a targeted event wait such as <code>waitForResponse()</code>. Playwright's auto-waiting covers actionability, while explicit state-based waits cover application-specific readiness.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/actionability" target="_blank" rel="noopener">https://playwright.dev/docs/actionability</a></li>
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+<li><a href="https://playwright.dev/docs/network" target="_blank" rel="noopener">https://playwright.dev/docs/network</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="12-what-are-the-main-built-in-fixtures">
+<h3>12. What are the main built-in fixtures?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Common fixtures are <code>page</code>, <code>context</code>, <code>browser</code>, <code>browserName</code>, and <code>request</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> <code>page</code> and <code>context</code> are isolated for each test. <code>browser</code> is shared for efficiency. <code>request</code> is an isolated <code>APIRequestContext</code> for direct HTTP calls. A fixture is requested by naming it in the test or hook parameter.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-fixtures#built-in-fixtures" target="_blank" rel="noopener">https://playwright.dev/docs/test-fixtures#built-in-fixtures</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="13-what-hooks-does-playwright-test-provide">
+<h3>13. What hooks does Playwright Test provide?</h3>
+<p><strong class="answer-label">Direct answer:</strong> It provides <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, and <code>afterAll</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> Per-test hooks run around every test; all-hooks run once for their containing scope in a worker. Hooks are useful for straightforward setup, but reusable setup/teardown is often better represented by fixtures. Tests should not rely on another test having run first.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/writing-tests#using-test-hooks" target="_blank" rel="noopener">https://playwright.dev/docs/writing-tests#using-test-hooks</a></li>
+<li><a href="https://playwright.dev/docs/api/class-test" target="_blank" rel="noopener">https://playwright.dev/docs/api/class-test</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="14-how-does-playwright-isolate-tests">
+<h3>14. How does Playwright isolate tests?</h3>
+<p><strong class="answer-label">Direct answer:</strong> It creates a fresh browser context, similar to a new incognito profile, for each test and supplies a page in that context.</p>
+<p><strong class="answer-label">Explanation:</strong> Cookies, local storage, and session storage do not leak between contexts. Contexts are cheap to create, so Playwright can keep the browser process available while preserving test independence and preventing cascading failures.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/browser-contexts" target="_blank" rel="noopener">https://playwright.dev/docs/browser-contexts</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="15-what-is-a-page-object-model-pom">
+<h3>15. What is a Page Object Model (POM)?</h3>
+<p><strong class="answer-label">Direct answer:</strong> A POM wraps a part of the application in a higher-level API that centralizes locators and reusable user flows.</p>
+<p><strong class="answer-label">Explanation:</strong> It can reduce duplication and localize maintenance when UI details change. Keep test intent and important assertions visible; do not turn a POM into a large catch-all abstraction that hides behavior or creates shared mutable state.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/pom" target="_blank" rel="noopener">https://playwright.dev/docs/pom</a></li>
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<hr />
+<h2 id="intermediate" class="level-heading">Intermediate</h2>
+<article class="qa" id="16-when-should-you-create-a-custom-fixture-instead-of-using-hooks">
+<h3>16. When should you create a custom fixture instead of using hooks?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Use a custom fixture when setup is reusable, has paired teardown, is needed only by some tests, or composes with other dependencies.</p>
+<p><strong class="answer-label">Explanation:</strong> Fixtures encapsulate setup and cleanup around <code>await use(value)</code>, are lazy/on-demand, and can depend on other fixtures. Hooks remain suitable for simple local actions that genuinely apply to every test in a scope.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-fixtures" target="_blank" rel="noopener">https://playwright.dev/docs/test-fixtures</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="17-what-is-the-difference-between-test-scoped-and-worker-scoped-fixtures">
+<h3>17. What is the difference between test-scoped and worker-scoped fixtures?</h3>
+<p><strong class="answer-label">Direct answer:</strong> A test-scoped fixture is created per test; a worker-scoped fixture is created once per worker process and reused by tests running in that worker.</p>
+<p><strong class="answer-label">Explanation:</strong> Use test scope for mutable or isolation-sensitive resources. Use worker scope for expensive resources that can be safely shared, such as a service or worker-specific account. Declare worker scope with <code>{ scope: &#x27;worker&#x27; }</code> and clean it up after <code>use</code>.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-fixtures#worker-scoped-fixtures" target="_blank" rel="noopener">https://playwright.dev/docs/test-fixtures#worker-scoped-fixtures</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="18-what-is-the-difference-between-browser-context-and-page">
+<h3>18. What is the difference between <code>browser</code>, <code>context</code>, and <code>page</code>?</h3>
+<p><strong class="answer-label">Direct answer:</strong> <code>browser</code> is the browser process connection, <code>context</code> is an isolated browser profile, and <code>page</code> is a tab or popup inside a context.</p>
+<p><strong class="answer-label">Explanation:</strong> One browser can host many isolated contexts, and one context can host many pages. Context-level settings such as cookies, permissions, emulation, and routes apply to pages within that context.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/browser-contexts" target="_blank" rel="noopener">https://playwright.dev/docs/browser-contexts</a></li>
+<li><a href="https://playwright.dev/docs/pages" target="_blank" rel="noopener">https://playwright.dev/docs/pages</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="19-how-do-you-test-two-users-interacting-in-one-scenario">
+<h3>19. How do you test two users interacting in one scenario?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Create two browser contexts from the <code>browser</code> fixture and a page in each context.</p>
+<p><strong class="answer-label">Explanation:</strong> Separate contexts keep each user's cookies and storage independent while allowing both users to participate in the same test—for example, an admin and customer or two chat participants. Close manually created contexts during cleanup.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/browser-contexts#multiple-contexts-in-a-single-test" target="_blank" rel="noopener">https://playwright.dev/docs/browser-contexts#multiple-contexts-in-a-single-test</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="20-how-do-you-handle-a-new-tab-or-popup-without-a-race">
+<h3>20. How do you handle a new tab or popup without a race?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Start waiting for the <code>page</code> or <code>popup</code> event before triggering the action, then await the event promise.</p>
+<p><strong class="answer-label">Explanation:</strong> Use <code>context.waitForEvent(&#x27;page&#x27;)</code> for any new page in the context, or <code>page.waitForEvent(&#x27;popup&#x27;)</code> for a popup opened by a particular page. Registering the wait first prevents missing an event that occurs immediately after the click.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/pages#handling-new-pages" target="_blank" rel="noopener">https://playwright.dev/docs/pages#handling-new-pages</a></li>
+<li><a href="https://playwright.dev/docs/pages#handling-popups" target="_blank" rel="noopener">https://playwright.dev/docs/pages#handling-popups</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="21-how-do-you-interact-with-content-inside-an-iframe">
+<h3>21. How do you interact with content inside an iframe?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Use a frame locator, such as <code>page.frameLocator(selector).getByRole(...)</code>, or obtain a <code>Frame</code> with <code>page.frame()</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> Page-level locators operate in the main frame. <code>frameLocator()</code> keeps locator-style retry behavior and is usually the convenient choice; a <code>Frame</code> object is useful when selecting by frame name or URL.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/frames" target="_blank" rel="noopener">https://playwright.dev/docs/frames</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="22-how-do-you-wait-for-a-network-response-caused-by-an-action">
+<h3>22. How do you wait for a network response caused by an action?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Create the <code>page.waitForResponse()</code> promise before the action, perform the action, and then await the promise.</p>
+<p><strong class="answer-label">Explanation:</strong> Match with a full-URL glob, regular expression, or predicate. This event-first pattern avoids a race and is useful when a specific backend response is the readiness condition.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/network#network-events" target="_blank" rel="noopener">https://playwright.dev/docs/network#network-events</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="23-how-do-you-mock-an-api-response">
+<h3>23. How do you mock an API response?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Register a route before navigation or the triggering action and call <code>route.fulfill()</code> with the desired response.</p>
+<p><strong class="answer-label">Explanation:</strong> <code>page.route()</code> applies to one page; <code>context.route()</code> applies across pages in the context. A route can fulfill without reaching the backend, abort the request, continue it with modifications, or fetch and patch the real response.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/mock" target="_blank" rel="noopener">https://playwright.dev/docs/mock</a></li>
+<li><a href="https://playwright.dev/docs/network" target="_blank" rel="noopener">https://playwright.dev/docs/network</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="24-how-should-authenticated-state-be-reused-safely">
+<h3>24. How should authenticated state be reused safely?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Authenticate in a setup project, save <code>storageState</code>, and configure dependent projects to load it.</p>
+<p><strong class="answer-label">Explanation:</strong> The state can contain sensitive cookies and headers, so store it in a gitignored directory such as <code>playwright/.auth</code>. A shared account is appropriate only when parallel tests do not interfere through server-side state; otherwise use separate accounts.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/auth" target="_blank" rel="noopener">https://playwright.dev/docs/auth</a></li>
+<li><a href="https://playwright.dev/docs/test-global-setup-teardown" target="_blank" rel="noopener">https://playwright.dev/docs/test-global-setup-teardown</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="25-what-are-playwright-projects">
+<h3>25. What are Playwright projects?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Projects are logical groups of tests that run with different configuration.</p>
+<p><strong class="answer-label">Explanation:</strong> They commonly represent browsers and devices, but can also represent environments, authentication states, retries, timeouts, or test subsets. Run one with <code>--project=&lt;name&gt;</code>, and use project dependencies when setup must complete first.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-projects" target="_blank" rel="noopener">https://playwright.dev/docs/test-projects</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="26-what-does-device-emulation-cover">
+<h3>26. What does device emulation cover?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Device descriptors configure browser characteristics such as user agent, viewport, screen size, touch support, and mobile behavior.</p>
+<p><strong class="answer-label">Explanation:</strong> Playwright can also emulate locale, timezone, geolocation, permissions, color scheme, offline mode, and JavaScript-disabled behavior. Emulation is useful browser-level simulation, but it is not a substitute for all real-device testing.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/emulation" target="_blank" rel="noopener">https://playwright.dev/docs/emulation</a></li>
+<li><a href="https://playwright.dev/docs/test-projects" target="_blank" rel="noopener">https://playwright.dev/docs/test-projects</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="27-how-does-parallel-execution-work-by-default">
+<h3>27. How does parallel execution work by default?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Playwright runs test files in parallel worker processes, while tests in one file run in declaration order by default.</p>
+<p><strong class="answer-label">Explanation:</strong> Workers are independent OS processes with identical environments. <code>workers</code> limits concurrency; <code>fullyParallel</code> or <code>test.describe.configure({ mode: &#x27;parallel&#x27; })</code> can permit test-level parallelism. After a failure, Playwright discards the worker to preserve a clean environment.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-parallel" target="_blank" rel="noopener">https://playwright.dev/docs/test-parallel</a></li>
+<li><a href="https://playwright.dev/docs/test-retries#failures" target="_blank" rel="noopener">https://playwright.dev/docs/test-retries#failures</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="28-what-do-retries-mean-and-how-are-results-classified">
+<h3>28. What do retries mean, and how are results classified?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Retries rerun failed tests up to a configured limit; Playwright classifies results as passed, flaky, or failed.</p>
+<p><strong class="answer-label">Explanation:</strong> Passed means success on the first run, flaky means failure followed by success on retry, and failed means all attempts failed. Retries are a diagnostic/safety mechanism, not a replacement for fixing nondeterministic tests.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-retries" target="_blank" rel="noopener">https://playwright.dev/docs/test-retries</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="29-which-playwright-timeouts-should-an-engineer-know">
+<h3>29. Which Playwright timeouts should an engineer know?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Know the test timeout, expect timeout, global timeout, and lower-level action, navigation, hook, and fixture timeouts.</p>
+<p><strong class="answer-label">Explanation:</strong> The default test timeout is 30 seconds and includes the test body, fixture setup, and <code>beforeEach</code>. Auto-retrying assertions have a separate default of 5 seconds. Configure the narrowest relevant timeout instead of globally inflating all waits.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-timeouts" target="_blank" rel="noopener">https://playwright.dev/docs/test-timeouts</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="30-which-tools-are-available-for-local-debugging">
+<h3>30. Which tools are available for local debugging?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Use UI Mode, the VS Code extension, Playwright Inspector, <code>--debug</code>, <code>page.pause()</code>, headed mode, and verbose API logs.</p>
+<p><strong class="answer-label">Explanation:</strong> UI Mode provides watch-style execution and time-travel inspection. Inspector can step through actions, inspect actionability logs, and edit locators. Trace Viewer is mainly for recorded post-run diagnosis, especially CI failures.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/debug" target="_blank" rel="noopener">https://playwright.dev/docs/debug</a></li>
+<li><a href="https://playwright.dev/docs/running-tests" target="_blank" rel="noopener">https://playwright.dev/docs/running-tests</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="31-how-do-screenshots-videos-and-traces-differ">
+<h3>31. How do screenshots, videos, and traces differ?</h3>
+<p><strong class="answer-label">Direct answer:</strong> A screenshot captures one visual state, video records the viewport over time, and a trace records actions plus rich diagnostic data such as DOM snapshots, logs, network, console, and attachments.</p>
+<p><strong class="answer-label">Explanation:</strong> Configure retention under <code>use</code>; common choices are screenshots only on failure and traces on the first retry. Videos are written when the context closes. For CI diagnosis, the official best-practices guide recommends traces over relying only on screenshots or videos.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/screenshots" target="_blank" rel="noopener">https://playwright.dev/docs/screenshots</a></li>
+<li><a href="https://playwright.dev/docs/videos" target="_blank" rel="noopener">https://playwright.dev/docs/videos</a></li>
+<li><a href="https://playwright.dev/docs/trace-viewer" target="_blank" rel="noopener">https://playwright.dev/docs/trace-viewer</a></li>
+<li><a href="https://playwright.dev/docs/test-use-options#recording-options" target="_blank" rel="noopener">https://playwright.dev/docs/test-use-options#recording-options</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="32-how-does-playwright-support-api-testing">
+<h3>32. How does Playwright support API testing?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Use the built-in <code>request</code> fixture or create an <code>APIRequestContext</code> to send HTTP(S) requests directly.</p>
+<p><strong class="answer-label">Explanation:</strong> API calls can test services, establish server-side preconditions before UI actions, or verify postconditions after them. Configure <code>baseURL</code>, headers, credentials, and proxy centrally; assert status and response payloads.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/api-testing" target="_blank" rel="noopener">https://playwright.dev/docs/api-testing</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="33-how-can-accessibility-checks-be-added-to-playwright-tests">
+<h3>33. How can accessibility checks be added to Playwright tests?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Use the documented <code>@axe-core/playwright</code> integration, run <code>AxeBuilder.analyze()</code>, and assert that the relevant violations collection is empty.</p>
+<p><strong class="answer-label">Explanation:</strong> Scan the page only after it reaches the intended state. Scans can target a region or selected WCAG tags. Automated checks find only some accessibility defects, so they must complement manual assessment and inclusive user testing.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/accessibility-testing" target="_blank" rel="noopener">https://playwright.dev/docs/accessibility-testing</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="34-what-is-a-practical-baseline-for-running-playwright-in-ci">
+<h3>34. What is a practical baseline for running Playwright in CI?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Install dependencies with <code>npm ci</code>, install browsers and OS dependencies with <code>npx playwright install --with-deps</code>, run <code>npx playwright test</code>, and upload the report/artifacts.</p>
+<p><strong class="answer-label">Explanation:</strong> Use a supported Linux image or the official Playwright container. The docs recommend one worker on typical CI for stability, with sharding across jobs when broader parallel scale is needed. Set <code>forbidOnly</code> so committed focused tests fail CI.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/ci" target="_blank" rel="noopener">https://playwright.dev/docs/ci</a></li>
+<li><a href="https://playwright.dev/docs/test-configuration" target="_blank" rel="noopener">https://playwright.dev/docs/test-configuration</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="35-which-reporters-should-an-sdet-understand">
+<h3>35. Which reporters should an SDET understand?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Understand terminal reporters (<code>list</code>, <code>line</code>, <code>dot</code>), human-readable HTML, machine-readable JSON/JUnit, GitHub annotations, and blob reports for merging sharded output.</p>
+<p><strong class="answer-label">Explanation:</strong> Multiple reporters can run together. A common setup uses concise console output plus HTML for investigation and JUnit for CI integration. Custom reporters implement the Playwright Reporter API.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-reporters" target="_blank" rel="noopener">https://playwright.dev/docs/test-reporters</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<hr />
+<h2 id="advanced" class="level-heading">Advanced</h2>
+<article class="qa" id="36-how-does-fixture-lifecycle-and-dependency-ordering-work">
+<h3>36. How does fixture lifecycle and dependency ordering work?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Playwright resolves only fixtures requested by a test or its dependencies, sets dependencies up first, and tears them down in reverse order after <code>await use()</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> This makes fixtures lazy and composable. Test-scoped fixtures run around a test; worker-scoped fixtures surround all applicable tests in a worker. Automatic fixtures opt in with <code>{ auto: true }</code>, and fixture-specific timeouts can isolate slow resource setup from the test timeout.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-fixtures" target="_blank" rel="noopener">https://playwright.dev/docs/test-fixtures</a></li>
+<li><a href="https://playwright.dev/docs/test-timeouts#fixture-timeout" target="_blank" rel="noopener">https://playwright.dev/docs/test-timeouts#fixture-timeout</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="37-how-should-authentication-be-designed-for-parallel-tests-that-mutate-server-state">
+<h3>37. How should authentication be designed for parallel tests that mutate server state?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Allocate a separate account or authenticated state per parallel worker rather than sharing one account across all workers.</p>
+<p><strong class="answer-label">Explanation:</strong> A worker-scoped fixture can use <code>parallelIndex</code> to acquire a unique account, authenticate once, save worker-specific state, and override <code>storageState</code> for tests in that worker. Account uniqueness must also account for simultaneous runs by different developers or CI jobs.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/auth#moderate-one-account-per-parallel-worker" target="_blank" rel="noopener">https://playwright.dev/docs/auth#moderate-one-account-per-parallel-worker</a></li>
+<li><a href="https://playwright.dev/docs/test-fixtures#worker-scoped-fixtures" target="_blank" rel="noopener">https://playwright.dev/docs/test-fixtures#worker-scoped-fixtures</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="38-why-are-project-dependencies-generally-preferable-to-a-basic-globalsetup-for-test-setup">
+<h3>38. Why are project dependencies generally preferable to a basic <code>globalSetup</code> for test setup?</h3>
+<p><strong class="answer-label">Direct answer:</strong> A setup project participates in the normal test model, so it can use fixtures, produce traces, appear in reports, and be retried; dependent projects wait for it to pass.</p>
+<p><strong class="answer-label">Explanation:</strong> <code>globalSetup</code> remains available as a function run before the suite, but project dependencies provide better visibility and integration with Playwright tooling. Use teardown projects when cleanup must run after dependent projects.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-global-setup-teardown" target="_blank" rel="noopener">https://playwright.dev/docs/test-global-setup-teardown</a></li>
+<li><a href="https://playwright.dev/docs/test-projects#dependencies" target="_blank" rel="noopener">https://playwright.dev/docs/test-projects#dependencies</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="39-what-are-the-main-network-routing-operations">
+<h3>39. What are the main network-routing operations?</h3>
+<p><strong class="answer-label">Direct answer:</strong> <code>route.fulfill()</code> supplies a response, <code>route.continue()</code> sends the request—optionally modified—<code>route.abort()</code> blocks it, and <code>route.fetch()</code> obtains the real response so it can be patched.</p>
+<p><strong class="answer-label">Explanation:</strong> Register routes before requests begin. Context routes cover pages and popups in that context. URL globs must match the entire URL; use regular expressions or predicates for more complex matching. If Service Workers hide events from native routing, the docs advise blocking Service Workers for that scenario.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/network" target="_blank" rel="noopener">https://playwright.dev/docs/network</a></li>
+<li><a href="https://playwright.dev/docs/mock" target="_blank" rel="noopener">https://playwright.dev/docs/mock</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="40-when-is-har-based-mocking-useful-and-what-are-its-matching-rules">
+<h3>40. When is HAR-based mocking useful, and what are its matching rules?</h3>
+<p><strong class="answer-label">Direct answer:</strong> HAR replay is useful when a test needs a recorded set of deterministic network responses rather than many hand-written route handlers.</p>
+<p><strong class="answer-label">Explanation:</strong> Record or update a HAR, commit the intended test artifact, and replay it with <code>routeFromHAR()</code>. Replay matches URL and method strictly; POST requests also match payload strictly, and the best header match is selected when several entries qualify.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/mock#mocking-with-har-files" target="_blank" rel="noopener">https://playwright.dev/docs/mock#mocking-with-har-files</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="41-how-do-browser-context-and-isolated-api-request-contexts-differ-in-cookie-handling">
+<h3>41. How do browser-context and isolated API request contexts differ in cookie handling?</h3>
+<p><strong class="answer-label">Direct answer:</strong> <code>context.request</code> and <code>page.request</code> share cookie storage with their browser context; a context created with <code>request.newContext()</code> has isolated cookie storage.</p>
+<p><strong class="answer-label">Explanation:</strong> A browser-associated request automatically sends context cookies and updates browser cookies from <code>Set-Cookie</code>. Use an isolated <code>APIRequestContext</code> when that coupling is undesirable. <code>storageState</code> can be transferred between API and browser contexts for API-based login.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/api-testing#context-request-vs-global-request" target="_blank" rel="noopener">https://playwright.dev/docs/api-testing#context-request-vs-global-request</a></li>
+<li><a href="https://playwright.dev/docs/api-testing#reusing-authentication-state" target="_blank" rel="noopener">https://playwright.dev/docs/api-testing#reusing-authentication-state</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="42-how-does-sharding-differ-from-local-parallelism">
+<h3>42. How does sharding differ from local parallelism?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Local parallelism uses worker processes on one machine; sharding partitions the suite across multiple independent machines or CI jobs.</p>
+<p><strong class="answer-label">Explanation:</strong> Invoke each shard with <code>--shard=x/y</code>. With <code>fullyParallel</code>, Playwright can balance individual tests across shards; otherwise it assigns whole files, so uneven file sizes can create uneven shards.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-parallel" target="_blank" rel="noopener">https://playwright.dev/docs/test-parallel</a></li>
+<li><a href="https://playwright.dev/docs/test-sharding" target="_blank" rel="noopener">https://playwright.dev/docs/test-sharding</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="43-how-do-you-produce-one-report-from-many-shards">
+<h3>43. How do you produce one report from many shards?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Generate a blob report in every shard, collect all blob archives into one directory, and run <code>npx playwright merge-reports --reporter html &lt;directory&gt;</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> Blob reports retain test results and attachments and are designed for later merging. Keep environments consistent, or tag/disambiguate different environments and provide merge configuration when paths differ across operating systems.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-sharding#merging-reports-from-multiple-shards" target="_blank" rel="noopener">https://playwright.dev/docs/test-sharding#merging-reports-from-multiple-shards</a></li>
+<li><a href="https://playwright.dev/docs/test-reporters#blob-reporter" target="_blank" rel="noopener">https://playwright.dev/docs/test-reporters#blob-reporter</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="44-what-happens-to-workers-and-hooks-after-a-test-failure">
+<h3>44. What happens to workers and hooks after a test failure?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Playwright discards the failed worker process and starts a clean worker; applicable <code>afterAll</code> and then <code>beforeAll</code> hooks run around that transition.</p>
+<p><strong class="answer-label">Explanation:</strong> With retries enabled, the new worker retries the failed test before continuing. This protects healthy tests from contaminated process/browser state, but it means worker and all-hook setup must tolerate being performed again.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-retries#failures" target="_blank" rel="noopener">https://playwright.dev/docs/test-retries#failures</a></li>
+<li><a href="https://playwright.dev/docs/test-parallel#worker-processes" target="_blank" rel="noopener">https://playwright.dev/docs/test-parallel#worker-processes</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="45-when-should-serial-mode-be-used">
+<h3>45. When should serial mode be used?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Use serial mode only when tests are intentionally dependent and cannot reasonably be made independent.</p>
+<p><strong class="answer-label">Explanation:</strong> In a serial group, a failure skips subsequent tests, and retries rerun the whole group. Independent tests are easier to isolate, parallelize, shard, retry, and debug, so the official guidance favors independence.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-retries#serial-mode" target="_blank" rel="noopener">https://playwright.dev/docs/test-retries#serial-mode</a></li>
+<li><a href="https://playwright.dev/docs/test-parallel#serial-mode" target="_blank" rel="noopener">https://playwright.dev/docs/test-parallel#serial-mode</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="46-how-should-timeout-failures-be-diagnosed-instead-of-simply-raising-every-timeout">
+<h3>46. How should timeout failures be diagnosed instead of simply raising every timeout?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Identify which budget expired and inspect its call log/trace to determine the unmet condition.</p>
+<p><strong class="answer-label">Explanation:</strong> A test timeout, expect timeout, action timeout, navigation timeout, hook timeout, fixture timeout, and global timeout have different scopes. Raising a narrow expectation or fixture timeout can be valid; globally increasing timeouts often conceals incorrect readiness conditions, resource contention, or a bad locator.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-timeouts" target="_blank" rel="noopener">https://playwright.dev/docs/test-timeouts</a></li>
+<li><a href="https://playwright.dev/docs/trace-viewer" target="_blank" rel="noopener">https://playwright.dev/docs/trace-viewer</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="47-what-trace-policy-gives-useful-ci-evidence-without-excessive-overhead">
+<h3>47. What trace policy gives useful CI evidence without excessive overhead?</h3>
+<p><strong class="answer-label">Direct answer:</strong> A strong default is retries on CI with <code>trace: &#x27;on-first-retry&#x27;</code>.</p>
+<p><strong class="answer-label">Explanation:</strong> It captures a rich artifact for a reproduced failure while avoiding the cost of tracing every successful test. If diagnosing first-attempt-only failures, <code>retain-on-failure</code> or a targeted <code>--trace on</code> run may be more suitable. Trace Viewer exposes the timeline, DOM snapshots, action logs, network, console, source, and attachments.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/trace-viewer" target="_blank" rel="noopener">https://playwright.dev/docs/trace-viewer</a></li>
+<li><a href="https://playwright.dev/docs/test-use-options#trace-modes" target="_blank" rel="noopener">https://playwright.dev/docs/test-use-options#trace-modes</a></li>
+<li><a href="https://playwright.dev/docs/best-practices#debugging-on-ci" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices#debugging-on-ci</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="48-how-do-expect-poll-and-expect-topass-differ-from-locator-assertions">
+<h3>48. How do <code>expect.poll()</code> and <code>expect(...).toPass()</code> differ from locator assertions?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Locator assertions retry a specific page-facing matcher; <code>expect.poll()</code> repeatedly evaluates a function, while <code>toPass()</code> retries a block containing one or more assertions.</p>
+<p><strong class="answer-label">Explanation:</strong> Use locator assertions first for DOM state. Use polling for eventually consistent values such as an API status. Use <code>toPass()</code> when a multi-step assertion block must eventually succeed, and configure its timeout explicitly because its default timeout behavior differs from ordinary expect configuration.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-assertions#expectpoll" target="_blank" rel="noopener">https://playwright.dev/docs/test-assertions#expectpoll</a></li>
+<li><a href="https://playwright.dev/docs/test-assertions#expecttopass" target="_blank" rel="noopener">https://playwright.dev/docs/test-assertions#expecttopass</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="49-how-do-you-build-resilient-compound-locators">
+<h3>49. How do you build resilient compound locators?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Start from a user-facing anchor, then narrow with chaining, <code>filter({ hasText, has, hasNot })</code>, or locator <code>and()</code>/<code>or()</code> composition.</p>
+<p><strong class="answer-label">Explanation:</strong> Scope to a stable container such as a list item or dialog and then locate the control within it. This expresses relationships users can perceive and avoids positional selectors. Ensure alternatives used with <code>or()</code> do not create a strictness violation when both are visible.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/locators#filtering-locators" target="_blank" rel="noopener">https://playwright.dev/docs/locators#filtering-locators</a></li>
+<li><a href="https://playwright.dev/docs/locators#locator-operators" target="_blank" rel="noopener">https://playwright.dev/docs/locators#locator-operators</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="50-what-is-the-correct-pattern-for-any-event-triggered-by-an-action">
+<h3>50. What is the correct pattern for any event triggered by an action?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Register the event wait first without awaiting it, trigger the action, then await the event promise.</p>
+<p><strong class="answer-label">Explanation:</strong> This applies to popups, downloads, responses, requests, dialogs, and similar fast events. Waiting only after the action introduces a race because the event may already have fired.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/events" target="_blank" rel="noopener">https://playwright.dev/docs/events</a></li>
+<li><a href="https://playwright.dev/docs/pages" target="_blank" rel="noopener">https://playwright.dev/docs/pages</a></li>
+<li><a href="https://playwright.dev/docs/network" target="_blank" rel="noopener">https://playwright.dev/docs/network</a></li>
+<li><a href="https://playwright.dev/docs/downloads" target="_blank" rel="noopener">https://playwright.dev/docs/downloads</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="51-how-should-an-advanced-pom-and-fixture-architecture-divide-responsibilities">
+<h3>51. How should an advanced POM and fixture architecture divide responsibilities?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Let page/component objects expose domain-level UI operations and locators; let fixtures construct those objects and own environmental setup/teardown; let tests express scenarios and business assertions.</p>
+<p><strong class="answer-label">Explanation:</strong> This combines the official POM goal—centralized selectors and reusable high-level operations—with fixtures' lazy dependency lifecycle. Avoid global page objects and shared mutable state. Keep abstractions cohesive so a UI change has a localized impact and a failed test remains understandable from its steps.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/pom" target="_blank" rel="noopener">https://playwright.dev/docs/pom</a></li>
+<li><a href="https://playwright.dev/docs/test-fixtures" target="_blank" rel="noopener">https://playwright.dev/docs/test-fixtures</a></li>
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="52-how-should-test-data-be-designed-for-parallel-and-repeatable-execution">
+<h3>52. How should test data be designed for parallel and repeatable execution?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Give tests independent data and accounts, create server state through APIs when practical, and clean up through fixture teardown or isolated backend mechanisms.</p>
+<p><strong class="answer-label">Explanation:</strong> Browser contexts isolate client state, not shared database records. Unique worker/test identifiers prevent collisions; API setup is often faster than UI setup. Tests should be runnable alone, in any order, under retries, and across shards.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/best-practices#make-tests-as-isolated-as-possible" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices#make-tests-as-isolated-as-possible</a></li>
+<li><a href="https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests" target="_blank" rel="noopener">https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests</a></li>
+<li><a href="https://playwright.dev/docs/auth#moderate-one-account-per-parallel-worker" target="_blank" rel="noopener">https://playwright.dev/docs/auth#moderate-one-account-per-parallel-worker</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="53-what-can-automated-accessibility-testing-prove">
+<h3>53. What can automated accessibility testing prove?</h3>
+<p><strong class="answer-label">Direct answer:</strong> It can prove only that the configured automated rules found no violations in the scanned state; it cannot prove full accessibility or WCAG conformance.</p>
+<p><strong class="answer-label">Explanation:</strong> Many issues require keyboard, screen-reader, cognitive, visual, and inclusive-user evaluation. Keep suppressions narrow, scan dynamic states after interactions, and attach full results for diagnosis. Avoid snapshotting an entire axe result object because implementation details make it fragile.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/accessibility-testing" target="_blank" rel="noopener">https://playwright.dev/docs/accessibility-testing</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="54-how-do-you-choose-ci-workers-projects-and-shards-without-creating-flakiness">
+<h3>54. How do you choose CI workers, projects, and shards without creating flakiness?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Treat projects as coverage dimensions, workers as per-machine concurrency, and shards as cross-machine distribution; tune each against resource limits and test isolation.</p>
+<p><strong class="answer-label">Explanation:</strong> Start with stable resource allocation—the CI guide recommends one worker in common CI environments—then use shards for throughput. Increase workers only on sufficiently powerful agents and only after eliminating shared-state conflicts. Use blob reports and traces so distributed failures remain diagnosable.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/ci#workers" target="_blank" rel="noopener">https://playwright.dev/docs/ci#workers</a></li>
+<li><a href="https://playwright.dev/docs/test-projects" target="_blank" rel="noopener">https://playwright.dev/docs/test-projects</a></li>
+<li><a href="https://playwright.dev/docs/test-sharding" target="_blank" rel="noopener">https://playwright.dev/docs/test-sharding</a></li>
+<li><a href="https://playwright.dev/docs/trace-viewer" target="_blank" rel="noopener">https://playwright.dev/docs/trace-viewer</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="55-what-principles-distinguish-a-maintainable-playwright-suite">
+<h3>55. What principles distinguish a maintainable Playwright suite?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Test user-visible behavior, use resilient locators and web-first assertions, isolate tests and data, centralize configuration, and introduce abstractions only where they clarify domain intent.</p>
+<p><strong class="answer-label">Explanation:</strong> Avoid testing third-party systems you do not control; mock their boundary where appropriate. Keep tests independent, use API setup for speed when it does not undermine the purpose of the test, collect traces for failures, and remove the root cause of flaky tests rather than normalizing retries.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+<li><a href="https://playwright.dev/docs/locators" target="_blank" rel="noopener">https://playwright.dev/docs/locators</a></li>
+<li><a href="https://playwright.dev/docs/test-assertions" target="_blank" rel="noopener">https://playwright.dev/docs/test-assertions</a></li>
+<li><a href="https://playwright.dev/docs/browser-contexts" target="_blank" rel="noopener">https://playwright.dev/docs/browser-contexts</a></li>
+<li><a href="https://playwright.dev/docs/mock" target="_blank" rel="noopener">https://playwright.dev/docs/mock</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<hr />
+<h2 id="rapid-review-checklist">Rapid review checklist</h2>
+<p>Before an interview, be able to explain and sketch:</p>
+<ul>
+<li>A minimal <code>playwright.config.ts</code> with <code>baseURL</code>, projects, retries, reporter, and trace policy.</li>
+<li>A test using <code>getByRole()</code>, an action, and an awaited web-first assertion.</li>
+<li>The actionability checks for a click and why fixed sleeps are weak.</li>
+<li>Test isolation through browser contexts and a two-user, two-context scenario.</li>
+<li>A custom fixture with setup, <code>use</code>, teardown, and the correct scope.</li>
+<li>Race-free waiting for a popup, response, or download.</li>
+<li>A route that fulfills a mock and a route that fetches then modifies a real response.</li>
+<li>A setup project that saves gitignored authentication state.</li>
+<li>The relationship between projects, workers, fully parallel mode, retries, and shards.</li>
+<li>The difference between screenshot, video, and trace evidence.</li>
+<li>An API-assisted UI test and an axe accessibility scan with its limitations.</li>
+<li>A CI flow that installs browsers/dependencies, runs tests, and publishes reports and traces.</li>
+<li>A POM/fixture structure that improves readability without hiding test intent.</li>
+</ul>
+<hr />
+<h2 id="original-content-and-license-note">Original content and license note</h2>
+<p>This interview guide is newly authored original educational content and may be shared, adapted, and reused with attribution to this guide's author or repository. It is not copied from or endorsed by Microsoft or the Playwright project. Playwright names and trademarks remain the property of their respective owners. Linked Playwright documentation, code samples, logos, and other first-party materials remain subject to their owners' copyright, trademark, and applicable license or website terms. Readers should consult the linked official sources for the current authoritative behavior.</p>
+  <nav class="lesson-nav">
+    <span><a href="#top">Back to top</a> · <a href="selenium-interview-guide.html">Selenium guide</a></span>
+    <span class="fine">Original study guide with links to authoritative sources.</span>
+  </nav>
+</main>
+</body>
+</html>
