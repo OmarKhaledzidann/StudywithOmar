@@ -15,7 +15,7 @@
   <h1>Playwright Interview Preparation Guide for Automation/SDET Engineers</h1>
   <p class="lede">Progressive interview preparation grounded in official documentation, from fundamentals to production-scale test engineering.</p>
   <div class="guide-meta">
-    <span>55 questions</span>
+    <span>57 questions</span>
     <span>Easy → Intermediate → Advanced</span>
     <span>Print-friendly</span>
   </div>
@@ -642,6 +642,49 @@ test(&#x27;shows the dashboard&#x27;, async ({ page }) =&gt; {
 <li><a href="https://playwright.dev/docs/locators" target="_blank" rel="noopener">https://playwright.dev/docs/locators</a></li>
 <li><a href="https://playwright.dev/docs/test-assertions" target="_blank" rel="noopener">https://playwright.dev/docs/test-assertions</a></li>
 <li><a href="https://playwright.dev/docs/browser-contexts" target="_blank" rel="noopener">https://playwright.dev/docs/browser-contexts</a></li>
+<li><a href="https://playwright.dev/docs/mock" target="_blank" rel="noopener">https://playwright.dev/docs/mock</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="56-how-do-you-investigate-a-flaky-playwright-test">
+<h3>56. How do you investigate a flaky Playwright test?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Reproduce the failure, collect evidence from both passing and failing runs, isolate the changing variable, fix the root cause, and prove the fix with repeated execution. Retries can expose flakiness, but they are not the fix.</p>
+<p><strong class="answer-label">A practical daily workflow:</strong></p>
+<ol>
+<li><strong>Confirm the pattern.</strong> Run the test repeatedly with <code>--repeat-each</code>, first in its normal project and then alone. Record whether it fails only in CI, under parallel load, or in one browser.</li>
+<li><strong>Inspect evidence.</strong> Open the Trace Viewer and compare a failed run with a passing run. Check the action log, DOM snapshot, network activity, console messages, screenshots, and timing.</li>
+<li><strong>Narrow the cause.</strong> Temporarily run with one worker and stable test data. Look for ambiguous locators, missing <code>await</code>, fixed sleeps, an event listener registered after its action, shared accounts, slow APIs, overlays, animations, or third-party dependencies.</li>
+<li><strong>Fix the cause.</strong> Use resilient locators and web-first assertions, register event waits before triggering actions, isolate browser contexts and data, and mock an external boundary when the real integration is not what the test is meant to verify.</li>
+<li><strong>Prove stability.</strong> Repeat the test locally and in CI under normal parallelism. Keep traces on the first retry for future diagnosis, and document the cause rather than simply increasing timeouts.</li>
+</ol>
+<p><strong class="answer-label">Example:</strong> A checkout test sometimes timed out after clicking “Place order.” The trace showed that the response completed before <code>waitForResponse()</code> was registered. Creating the response promise before the click removed the race; repeated parallel CI runs then confirmed the fix.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/test-retries" target="_blank" rel="noopener">https://playwright.dev/docs/test-retries</a></li>
+<li><a href="https://playwright.dev/docs/trace-viewer" target="_blank" rel="noopener">https://playwright.dev/docs/trace-viewer</a></li>
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+<li><a href="https://playwright.dev/docs/test-cli" target="_blank" rel="noopener">https://playwright.dev/docs/test-cli</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="57-what-challenges-have-you-faced-during-playwright-automation">
+<h3>57. What challenges have you faced during test automation, and how did you handle them?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Give one or two real examples using challenge, investigation, action, and measurable outcome. Strong answers show engineering judgment instead of only naming tools.</p>
+<p><strong class="answer-label">Common daily-life challenges:</strong></p>
+<ul>
+<li><strong>Dynamic UI and unstable locators:</strong> replace DOM-coupled selectors with roles, accessible names, or agreed test IDs.</li>
+<li><strong>Timing and network races:</strong> remove fixed sleeps, use web-first assertions, and register popup, download, or response waits before the triggering action.</li>
+<li><strong>Shared data and authentication:</strong> give workers unique users or records, create data through APIs, and keep tests isolated and independently repeatable.</li>
+<li><strong>CI-only failures:</strong> inspect traces and resource usage, reproduce with CI-like workers and browser settings, then tune concurrency only after fixing shared-state problems.</li>
+<li><strong>Unreliable external systems:</strong> test the owned integration contract and mock third-party boundaries when end-to-end availability is outside the team’s control.</li>
+</ul>
+<p><strong class="answer-label">Sample interview answer:</strong> “Our parallel checkout tests reused one account, so one test occasionally consumed another test’s cart. I used traces to confirm the shared-state conflict, created a worker-scoped account fixture, seeded each cart through the API, and added cleanup. The suite became independently repeatable and the CI failure rate dropped. I kept retries as a diagnostic signal, not as the solution.” Adapt this structure to an experience you can defend with details.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://playwright.dev/docs/best-practices" target="_blank" rel="noopener">https://playwright.dev/docs/best-practices</a></li>
+<li><a href="https://playwright.dev/docs/locators" target="_blank" rel="noopener">https://playwright.dev/docs/locators</a></li>
+<li><a href="https://playwright.dev/docs/auth#moderate-one-account-per-parallel-worker" target="_blank" rel="noopener">https://playwright.dev/docs/auth#moderate-one-account-per-parallel-worker</a></li>
+<li><a href="https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests" target="_blank" rel="noopener">https://playwright.dev/docs/api-testing#sending-api-requests-from-ui-tests</a></li>
 <li><a href="https://playwright.dev/docs/mock" target="_blank" rel="noopener">https://playwright.dev/docs/mock</a></li>
 </ul>
 <a class="back-to-top" href="#top">Back to top ↑</a>
