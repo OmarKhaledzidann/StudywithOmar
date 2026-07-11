@@ -13,7 +13,7 @@
   --warn-bg: #fdf3e7;
   --warn-border: #e0a44a;
   --measure: 40rem;
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Georgia", serif;
+  --serif: "Aptos", "Segoe UI", Arial, sans-serif;
   --mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, Menlo, Consolas, monospace;
 }
 
