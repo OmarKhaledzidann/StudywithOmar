@@ -1,0 +1,100 @@
+/* Interview-guide additions. Extends the shared course.css visual language. */
+
+:root {
+  --easy: #2d7d46;
+  --intermediate: #b9772a;
+  --advanced: #8a3f62;
+}
+
+html { scroll-behavior: smooth; }
+
+.guide-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin: 1.4rem 0 2rem;
+  padding: 0.8rem 0;
+  border-block: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+
+.guide-nav a { text-decoration: none; }
+
+.guide-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.2rem 0;
+}
+
+.guide-meta span {
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.qa {
+  margin: 1.1rem 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  background: #fff;
+  break-inside: avoid;
+}
+
+.qa h3 {
+  margin: 0 0 0.75rem;
+  line-height: 1.35;
+}
+
+.qa p { margin: 0.65rem 0; }
+.qa ul { margin: 0.45rem 0 0; }
+
+.level-heading {
+  margin-top: 3.2rem;
+  border-bottom-width: 2px;
+}
+
+#easy { border-bottom-color: var(--easy); }
+#intermediate { border-bottom-color: var(--intermediate); }
+#advanced { border-bottom-color: var(--advanced); }
+
+.answer-label {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.source-list {
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
+}
+
+.back-to-top {
+  display: block;
+  margin-top: 0.8rem;
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+}
+
+@media (max-width: 42rem) {
+  html { font-size: 16px; }
+  body { padding-inline: 1rem; }
+  .qa { padding: 0.85rem; }
+}
+
+@media print {
+  .guide-nav, .back-to-top { display: none; }
+  .qa {
+    border-color: #bbb;
+    box-shadow: none;
+  }
+  h2, h3 { break-after: avoid; }
+}
