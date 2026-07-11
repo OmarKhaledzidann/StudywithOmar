@@ -15,7 +15,7 @@
   <h1>Selenium Interview Preparation Guide for Automation and SDET Engineers</h1>
   <p class="lede">Progressive interview preparation grounded in official documentation, from fundamentals to production-scale test engineering.</p>
   <div class="guide-meta">
-    <span>48 questions</span>
+    <span>50 questions</span>
     <span>Easy → Intermediate → Advanced</span>
     <span>Print-friendly</span>
   </div>
@@ -607,6 +607,49 @@
 <li><a href="https://www.selenium.dev/documentation/overview/components/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/overview/components/</a></li>
 <li><a href="https://www.selenium.dev/documentation/webdriver/bidi/cdp/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/webdriver/bidi/cdp/</a></li>
 <li><a href="https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="a17-how-do-you-investigate-a-flaky-selenium-test">
+<h3>A17. How do you investigate a flaky Selenium test?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Reproduce and classify the intermittent failure, collect browser and test evidence, isolate timing, data, environment, and concurrency variables, fix the root cause, and verify the test repeatedly. Do not treat reruns or longer sleeps as the solution.</p>
+<p><strong class="answer-label">A practical daily workflow:</strong></p>
+<ol>
+<li><strong>Make the failure observable.</strong> Repeat the test with the same browser, driver, data, and Grid environment. Capture the exception, screenshot, page source when useful, browser console, session details, timestamps, and server/Grid logs.</li>
+<li><strong>Classify the symptom.</strong> A stale element usually suggests a replaced DOM node; an intercepted click suggests an overlay or animation; a missing element suggests synchronization, frame, window, or locator scope; session failures suggest driver, browser, or infrastructure issues.</li>
+<li><strong>Isolate variables.</strong> Run the test alone and sequentially, then restore parallelism. Check whether tests share a driver, account, record, download directory, or mutable environment. Confirm browser and driver compatibility.</li>
+<li><strong>Fix the cause.</strong> Replace sleeps with an explicit wait for the business-relevant condition, locate elements again after DOM updates, use stable locators, create a new WebDriver per test, and assign unique data to parallel runs.</li>
+<li><strong>Prove stability.</strong> Repeat locally and on Grid under normal load. Preserve useful diagnostics and track recurrence; do not hide an unresolved failure behind automatic reruns.</li>
+</ol>
+<p><strong class="answer-label">Example:</strong> A “Save” click intermittently raised <code>StaleElementReferenceException</code> because a React update replaced the button after validation. The fix was to wait for validation to finish and locate the button inside the wait instead of caching the old <code>WebElement</code>.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://www.selenium.dev/documentation/webdriver/waits/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/webdriver/waits/</a></li>
+<li><a href="https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/#staleelementreferenceexception" target="_blank" rel="noopener">https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/#staleelementreferenceexception</a></li>
+<li><a href="https://www.selenium.dev/documentation/test_practices/encouraged/avoid_sharing_state/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/test_practices/encouraged/avoid_sharing_state/</a></li>
+<li><a href="https://www.selenium.dev/documentation/grid/advanced_features/observability/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/grid/advanced_features/observability/</a></li>
+</ul>
+<a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+<article class="qa" id="a18-what-challenges-have-you-faced-during-selenium-automation">
+<h3>A18. What challenges have you faced during test automation, and how did you handle them?</h3>
+<p><strong class="answer-label">Direct answer:</strong> Describe a genuine problem with its impact, the evidence you gathered, the engineering change you made, and the result. Avoid a generic list with no ownership or outcome.</p>
+<p><strong class="answer-label">Common daily-life challenges:</strong></p>
+<ul>
+<li><strong>Dynamic elements and stale references:</strong> use stable IDs or compact CSS locators, wait for the real state, and relocate elements after a re-render.</li>
+<li><strong>AJAX, overlays, and animation timing:</strong> use focused explicit waits rather than global sleeps or mixed implicit and explicit waits.</li>
+<li><strong>Browser and driver differences:</strong> use Selenium Manager, record resolved versions, and reproduce failures in the affected browser before changing the test.</li>
+<li><strong>Parallel and Grid conflicts:</strong> create a fresh driver per test, use unique accounts and records, isolate files, and use Grid observability to separate application failures from infrastructure failures.</li>
+<li><strong>Hard-to-automate boundaries:</strong> avoid UI automation for CAPTCHAs, two-factor authentication, and download-progress validation; use approved test hooks or HTTP-level verification when appropriate.</li>
+</ul>
+<p><strong class="answer-label">Sample interview answer:</strong> “Our order-history test passed locally but failed on Grid because parallel tests reused the same customer and overwrote the latest order. Logs showed different sessions reading the same record. I generated unique customer data per test, stopped sharing WebDriver instances, and moved setup to an API. This removed the data race and shortened execution. I then kept screenshots and Grid session IDs in reports so future failures were easier to triage.” Use your own facts and metrics when answering.</p>
+<p><strong class="answer-label">Official sources:</strong></p>
+<ul class="source-list">
+<li><a href="https://www.selenium.dev/documentation/test_practices/encouraged/locators/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/test_practices/encouraged/locators/</a></li>
+<li><a href="https://www.selenium.dev/documentation/webdriver/waits/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/webdriver/waits/</a></li>
+<li><a href="https://www.selenium.dev/documentation/selenium_manager/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/selenium_manager/</a></li>
+<li><a href="https://www.selenium.dev/documentation/test_practices/encouraged/fresh_browser_per_test/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/test_practices/encouraged/fresh_browser_per_test/</a></li>
+<li><a href="https://www.selenium.dev/documentation/test_practices/discouraged/" target="_blank" rel="noopener">https://www.selenium.dev/documentation/test_practices/discouraged/</a></li>
 </ul>
 <a class="back-to-top" href="#top">Back to top ↑</a>
 </article>
